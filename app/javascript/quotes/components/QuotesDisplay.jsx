@@ -1,13 +1,17 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import queryString from 'query-string';
 import axios from 'axios';
+import QuoteText from './QuoteText';
+import QuoteNavigation from './QuoteNavigation';
+import QuoteFooter from './QuoteFooter';
 
 class QuotesDisplay extends React.Component {
   constructor() {
     super();
     this.state = {
-      quote: {}
+      quote: {},
+      fireRedirect: false
     };
   }
 
@@ -17,8 +21,8 @@ class QuotesDisplay extends React.Component {
         this.setState({ quote: response.data });
       })
       .catch(error => {
-        this.quoteId = this.props.startingQuoteId;
-        this.props.history.push(`/?quote=${this.quoteId}`);
+        console.error(error)
+        this.setState({ fireRedirect: true });
       });
   }
 
@@ -46,23 +50,39 @@ class QuotesDisplay extends React.Component {
 
   render () {
     const quote = this.state.quote;
+    const fireRedirect = this.state.fireRedirect;
+    const startingQuoteId = this.props.startingQuoteId;
     const nextQuoteId = quote.next_id;
     const previousQuoteId = quote.previous_id;
 
     return (
       <div>
-        {previousQuoteId &&
-          <Link to={`/?quote=${previousQuoteId}`}>
-            Previous
-          </Link>
+        <div className='quote-container'>
+          {fireRedirect &&
+            <Redirect to={'/'} />
+          }
+          {previousQuoteId &&
+            <QuoteNavigation
+              direction='previous'
+              otherQuoteId={previousQuoteId}
+            />
+          }
+          <QuoteText
+            quote={quote} 
+          />
+          {nextQuoteId &&
+            <QuoteNavigation
+              direction='next'
+              otherQuoteId={nextQuoteId}
+            />
+          }
+        </div>
+
+        {quote.id !== parsInt(startingQuoteId, 10) &&
+          <QuoteFooter
+            startingQuoteId={startingQuoteId}
+          />
         }
-        {nextQuoteId &&
-          <Link to={`/?quote=${nextQuoteId}`}>
-            Next
-          </Link>
-        }
-        <p>{quote.text}</p>
-        <p>{quote.author}</p>
       </div>
     );
   }
