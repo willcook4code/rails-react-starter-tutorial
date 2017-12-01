@@ -17,7 +17,8 @@ class QuotesDisplay extends React.Component {
         this.setState({ quote: response.data });
       })
       .catch(error => {
-        console.error(error);
+        this.quoteId = this.props.startingQuoteId;
+        this.props.history.push(`/?quote=${this.quoteId}`);
       });
   }
 
@@ -25,9 +26,9 @@ class QuotesDisplay extends React.Component {
     this.qsParams = queryString.parse(qs);
     if (this.qsParams.quote) {
       // assign quote ID from the URL's query string
-      this.quoteId = Number(this.qsParams.quote)
+      this.quoteId = Number(this.qsParams.quote);
     } else {
-      this.quoteId = 1;
+      this.quoteId = this.props.startingQuoteId;
       // update URL in browser to reflect current quote in query string
       this.props.history.push(`/?quote=${this.quoteId}`);
     }
