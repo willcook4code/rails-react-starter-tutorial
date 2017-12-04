@@ -68,7 +68,7 @@ class QuotesDisplay extends React.Component {
             />
           }
           <QuoteText
-            quote={quote} 
+            quote={quote}
           />
           {nextQuoteId &&
             <QuoteNavigation
@@ -78,7 +78,7 @@ class QuotesDisplay extends React.Component {
           }
         </div>
 
-        {quote.id !== parsInt(startingQuoteId, 10) &&
+        {quote.id !== parseInt(startingQuoteId, 10) &&
           <QuoteFooter
             startingQuoteId={startingQuoteId}
           />
